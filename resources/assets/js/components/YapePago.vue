@@ -1,5 +1,5 @@
 <template>
-  <mainyape class="main">
+  <main class="main">
     <!-- yape pago -->
   <section class="section">
     <div class="container">
@@ -14,7 +14,7 @@
     </div>
 </section>
 
-  </mainyape>
+  </main>
 </template>
 
 <script>
@@ -33,10 +33,10 @@ import HorizontalStepper from 'vue-stepper';
             return {
                 demoSteps: [
                     {
-                        icon: 'mail',
+                        icon: 'looks_one',
                         name: 'first',
-                        title: 'Sample title 1',
-                        subtitle: 'Subtitle sample',
+                        title: 'Intrudcucción',
+                        subtitle: '',
                         component: StepOne,
                         completed: false
  
