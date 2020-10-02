@@ -1,33 +1,33 @@
 <template>
 	<div>
 
-		<div class="m-1">
+		<b-container>
 
 			<div class="bcp_presentacion_pasos bcp_pasos_dentro" taggeo-category="Sección Canales" taggeo-action="Yape">
 				<div class="container bcp_padding_container_xlg">
 					<div class="row">
-						<div class="tab_titulo_pasos tab_titulo_pasos_hide_tablet principal">Aprende a usar YAPE</div>
+						<b-col cols="12">
+						<div class="tab_titulo_pasos tab_titulo_pasos_hide_tablet">Aprende a usar YAPE</div>
 						<div class="bcp_grupo_tabs">
-							<div class="tabs_grupo_pasos">
-								<div class="tab_titulo_pasos tab_titulo_pasos_hide_desktop"></div>
-								<div class="bcp_grupo_tab_item active" name-tab="2 Como yapeo">¿Cómo yapeo?</div>
-								<div class="bcp_grupo_tab_item" name-tab="3 Como pago con QR">¿Cómo yapeo a un
-									QR?</div>
-								<div class="bcp_grupo_tab_item" name-tab="4 Donde encuentro mi QR">¿Dónde encuentro mi
-									QR?</div>
+							<div class="tabs_grupo_pasos" style="align:center">
+								<div class="tab_titulo_pasos tab_titulo_pasos_hide_desktop principal">aPR</div>
+								<div @click="tipoTituloPasos(0)" :class="[value===0?'bcp_grupo_tab_item active':'bcp_grupo_tab_item' ]" >¿Cómo yapeo?</div>
+								<div @click="tipoTituloPasos(1)" :class="[value===1?'bcp_grupo_tab_item active':'bcp_grupo_tab_item' ]" name-tab="2 Como pago con QR">¿Cómo yapeo a un QR?</div>
+								<div @click="tipoTituloPasos(2)" :class="[value===2?'bcp_grupo_tab_item active':'bcp_grupo_tab_item' ]" name-tab="3 Donde encuentro mi QR">¿Dónde encuentro mi QR?</div>
 							</div>
 						</div>
+						
 						<div class="col-xs-17 col-md-17 col-lg-12 pasos_respuestas">
 							<div class="bcp_component_pasos grupo" tag-padre=""
-								name-tab="2 Como yapeo"  tag-paso="1">
+								namename-tab="2 Como yapeo"  tag-paso="1">
 							
 								<div class="contenedor_pasos">
 									<div class="paso_imagen ">
 
 										<img class=""
-											:data-src="pasos[indice].image"
+											:data-src="pasos[indice].imagen"
 											data-src-webp=""
-											:src="pasos[indice].image">
+											:src="pasos[indice].imagen">
 
 									</div>
 									<div class="paso_textos">
@@ -44,38 +44,28 @@
 											</div>
 										</div>
 										<div class="botones_group">
-											<div class="bcp_btn_pasos btn_preview bcp_boton_naranja_sin_fondo_y_borde disabled"
-												tag-action="prev">
-												<svg class="icon bcp-arrow-left-f" width="12" height="12"
-													viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path fill-rule="evenodd" clip-rule="evenodd"
-														d="M5.47101 11.471C5.76317 11.7632 6.23684 11.7632 6.52899 11.471C6.82095 11.179 6.82116 10.7057 6.52946 10.4135L2.8725 6.75L11.25 6.75C11.6642 6.75 12 6.41421 12 6C12 5.58579 11.6642 5.25 11.25 5.25L2.8725 5.25L6.52946 1.58649C6.82117 1.29426 6.82095 0.820952 6.52899 0.528986C6.23684 0.236835 5.76317 0.236835 5.47101 0.528986L5.24537e-07 6L5.47101 11.471Z"
-														fill="#ff7800"></path>
-												</svg>
+											<button id='1' @click="btnMoverClick(0)" :class="[indice===0?'disabled':'']+' previous btn btn-primary'" type='button'>
+												<span class="glyphicon glyphicon-chevron-left"></span>
+													Anterior
+												</button>
+												<button id='1' @click="btnMoverClick(1)" :class="[indice===pasos.length?'disabled':'']+' next btn btn-primary'" type='button'>
+													Siguiente
+												<span class="glyphicon glyphicon-chevron-right"></span>
+											</button>
 
-												Anterior
-											</div>
-											<div class="bcp_btn_pasos btn_next bcp_boton_naranja_sin_fondo_y_borde"
-												tag-action="next">Siguiente
-												<svg class="icon bcp-arrow-right-f" width="12" height="12"
-													viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path fill-rule="evenodd" clip-rule="evenodd"
-														d="M6.52899 0.528986C6.23684 0.236835 5.76316 0.236835 5.47101 0.528987C5.17905 0.820953 5.17884 1.29426 5.47054 1.58649L9.1275 5.25H0.75C0.335786 5.25 0 5.58579 0 6C0 6.41421 0.335786 6.75 0.75 6.75H9.1275L5.47054 10.4135C5.17884 10.7057 5.17905 11.179 5.47101 11.471C5.76316 11.7632 6.23684 11.7632 6.52899 11.471L12 6L6.52899 0.528986Z"
-														fill="#ff7800"></path>
-												</svg>
-
-											</div>
+										
 										</div>
 									</div>
 								</div>
 							</div>
 							
 						</div>
+						</b-col>
 					</div>
 				</div>
 			</div>
 
-		</div>
+		</b-container>
 	</div>
 
 
@@ -83,33 +73,75 @@
 
 <script>
 export default {
+	 beforeMount(){
+      this.inicializar();
+     },
 	data(){
 		return{
-			pasos:[{
-				image:"img/PagoContacto_Paso1.jpg", 
+			yapeo:[{
+				imagen:"img/PagoContacto_Paso1.jpg", 
 				titulo:'1. Selecciona "Yapear"',
 				descripcion:"En la pantalla principal, pulsa el botón “Yapear”.",
 				paso:1
 			},{
-				image:"img/PagoContacto_Paso2.jpg",
-				titulo:'1. Selecciona "Yapear"',
-				descripcion:" que fino es esto",
+				imagen:"img/PagoContacto_Paso2.jpg",
+				titulo:'2. Selecciona el contacto',
+				descripcion:"Elige la persona a quién quieres yapear.",
 				paso:2
+			},{
+				imagen:"img/PagoContacto_Paso3.jpg",
+				titulo:'3. Ingresa el monto',
+				descripcion:'Coloca el monto y una nota (opcional), dale a "Yapear"',
+				paso:3
+			},{
+				imagen:"img/PagoContacto_Paso4.jpg",
+				titulo:'4. ¡Yapeo listo!',
+				descripcion:"Se visualizará la pantalla de confirmación.",
+				paso:4
 			},
+
 			
 			],
 		   indice:0,
-		 
+		   value:0,
+		   
+		   pasos:[],
 		   
 		
 		}
-	}
+	},
+	methods:{
+		inicializar(){
+			this.pasos = this.yapeo;
+		},
+		tipoTituloPasos(valor){
+			this.value=valor;
+			this.indice = 0;
+		},
+		btnMoverClick(valor){
+			if(valor===0){
+				if(this.indice > 0){
+					this.indice--;
+				}
+			}else{
+					if(this.indice < this.pasos.length){
+					this.indice++;
+				}
+			}
+		}
+	},
 	
+	mounted(){
+         this.$emit('can-continue', {value: true});
+    }
 
 }
 </script>
 
 <style>
+.next {
+  float: right;
+}
         .bcp_presentacion_pasos {
             font-family: Flexo;
             background: #F7F9FC;
@@ -209,7 +241,7 @@ export default {
             }
         }
     
-        @media only screen and (min-width: 320px) and (max-width: 1279px) {
+        @media only screen and (min-width: 320px) and (max-width: 1199.98px) {
             .tabs_grupo_pasos {
                 width: max-content;
             }
@@ -325,7 +357,7 @@ export default {
             }
         }
     
-        @media (min-width: 1280px) {
+        @media (min-width: 3000px) {
             .tabs_grupo_pasos {
                 display: unset;
                 border-bottom: #EFF2F9 0.5px solid;

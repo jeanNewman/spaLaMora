@@ -23,7 +23,7 @@
         <div class="app-body">
 
             <!-- Contenido Principal -->
-            <yapepago></yapepago>
+            <yapepago :datos = "{{ json_encode($datos) }}"></yapepago>
             <!-- /Fin del contenido principal -->
         </div>
     </div>

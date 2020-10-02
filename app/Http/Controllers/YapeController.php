@@ -21,8 +21,12 @@ class YapeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('yape');
+        $cliente = $request->cliente;
+        $nro_orden = $request->nro_orden;
+        $email = $request->email;
+        $datos = ['cliente' => $cliente, 'nro_orden' => $nro_orden, 'email' => $email];
+        return view('yape')->with('datos',$datos);
     }
 }

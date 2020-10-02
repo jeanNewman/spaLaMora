@@ -13,6 +13,8 @@ class Orden extends Model
         'nombre_cliente',
         'telefono',
         'destino',
+        'idShopify',
+        'slot',
         'distrito',
         'banco',
         'formaPago',

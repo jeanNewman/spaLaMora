@@ -55,9 +55,8 @@ class OrdenController extends Controller
                 ->join('personas','ordenes.idcliente','=','personas.id')
                 ->join('detalle_ordenes', 'ordenes.id', '=', 'detalle_ordenes.idordenes')
                 ->select(DB::raw('ordenes.id,ordenes.nombre_cliente,personas.nombre,personas.tipo_documento,personas.num_documento,
-        personas.direccion,personas.email,
-         personas.telefono as telefonoCliente,ordenes.ruta as rutas,ordenes.telefono,' .
-                    'ordenes.destino,ordenes.distrito,ordenes.deposito,ordenes.observacion,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega,' .
+                     personas.direccion,personas.email, personas.telefono as telefonoCliente,ordenes.ruta as rutas,ordenes.telefono,' .
+                    'ordenes.destino,ordenes.idShopify,ordenes.slot,ordenes.distrito,ordenes.deposito,ordenes.observacion,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega,' .
                     'ordenes.estado,users.usuario,ordenes.formaPago,ordenes.banco,ordenes.total,' .
                     'CONCAT("[",GROUP_CONCAT(CONCAT(' . "'" . '{"idarticulo":"' . "'," . 'detalle_ordenes.idarticulo' . 
                     ',' . "'" .'", "indice":' . "'," . 'detalle_ordenes.index' .
@@ -68,7 +67,7 @@ class OrdenController extends Controller
                    
                     ->groupby('ordenes.id','ordenes.nombre_cliente', 'personas.nombre','personas.tipo_documento','personas.num_documento',
         'personas.direccion','personas.email',
-        'personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino', 'ordenes.distrito',
+        'personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino','ordenes.idShopify','ordenes.slot', 'ordenes.distrito',
                     'ordenes.deposito', 'ordenes.observacion', 'ordenes.fecha_entrega',
                     'ordenes.estado', 'users.usuario', 'ordenes.formaPago','ordenes.banco','ordenes.total')
                 ->orderBy('ordenes.id', 'desc')->paginate(5);
@@ -79,7 +78,7 @@ class OrdenController extends Controller
                 ->select(DB::raw('ordenes.id,ordenes.nombre_cliente,personas.nombre,personas.tipo_documento,personas.num_documento,
         personas.direccion,personas.email,
          personas.telefono as telefonoCliente,ordenes.ruta as rutas,ordenes.telefono,' .
-                    'ordenes.destino,ordenes.distrito,ordenes.deposito,ordenes.observacion,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega,' .
+                    'ordenes.destino,ordenes.idShopify,ordenes.slot,ordenes.distrito,ordenes.deposito,ordenes.observacion,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega,' .
                     'ordenes.estado,users.usuario,ordenes.formaPago,ordenes.banco,ordenes.total,' .
                     'CONCAT("[",GROUP_CONCAT(CONCAT(' . "'" . '{"idarticulo":"' . "'," . 'detalle_ordenes.idarticulo' . 
                         ',' . "'" .'", "indice":' . "'," . 'detalle_ordenes.index' .
@@ -93,7 +92,7 @@ class OrdenController extends Controller
                 
                 ->groupby('ordenes.id', 'ordenes.nombre_cliente','personas.nombre','personas.tipo_documento','personas.num_documento',
         'personas.direccion','personas.email',
-        'personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino', 'ordenes.distrito',
+        'personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino','ordenes.idShopify','ordenes.slot', 'ordenes.distrito',
                     'ordenes.deposito', 'ordenes.observacion', 'ordenes.fecha_entrega',
                     'ordenes.estado', 'users.usuario','ordenes.formaPago','ordenes.banco', 'ordenes.total')
                 ->orderBy('ordenes.id', 'desc')->paginate(5);
@@ -157,7 +156,7 @@ class OrdenController extends Controller
             ->join('personas','ordenes.idcliente','=','personas.id')
             ->select('ordenes.id', 'ordenes.nombre_cliente','personas.nombre','personas.tipo_documento','personas.num_documento',
                 'personas.direccion','personas.email',
-                'personas.telefono as telefonoCliente', 'ordenes.telefono', 'ordenes.destino', 'ordenes.distrito',
+                'personas.telefono as telefonoCliente', 'ordenes.telefono', 'ordenes.destino','ordenes.idShopify','ordenes.slot', 'ordenes.distrito',
                 'ordenes.deposito', 'ordenes.observacion', 'ordenes.fecha_entrega',
                 'ordenes.estado', 'users.usuario', 'ordenes.total') 
             ->where('ordenes.id', '=', $id)
@@ -166,7 +165,7 @@ class OrdenController extends Controller
             $ordenes = Orden::join('users', 'ordenes.idusuario', '=', 'users.id')
             ->join('personas','ordenes.idcliente','=','personas.id')
             ->select(DB::raw('users.usuario,ordenes.id,ordenes.ruta as rutas, personas.nombre,if(ordenes.destino is NULL,personas.direccion,ordenes.destino) as destino,
-            ordenes.distrito, personas.telefono as telefonoCliente,ordenes.nombre_cliente,ordenes.telefono,ordenes.observacion' ))
+            ordenes.idShopify,ordenes.slot, ordenes.distrito, personas.telefono as telefonoCliente,ordenes.nombre_cliente,ordenes.telefono,ordenes.observacion' ))
             ->where($tabla1 . $criterio, 'like', '%' . $buscar . '%')
             ->where('ordenes.estado','=','Registrado')
             ->whereBetween('ordenes.fecha_entrega', [$fechaIni, $fechaFin])
@@ -315,7 +314,7 @@ class OrdenController extends Controller
             ->join('detalle_ordenes', 'ordenes.id', '=', 'detalle_ordenes.idordenes')
             ->select(DB::raw('ordenes.id,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega, ordenes.ruta as rutas,ordenes.distrito,personas.nombre,'.
             'personas.tipo_documento,personas.num_documento,personas.direccion,personas.email,personas.telefono as telefonoCliente,'.
-            'ordenes.nombre_cliente,ordenes.telefono,ordenes.destino,ordenes.deposito,ordenes.observacion,ordenes.created_at,' .
+            'ordenes.nombre_cliente,ordenes.telefono,ordenes.destino, ,ordenes.idShopify,ordenes.slot,ordenes.deposito,ordenes.observacion,ordenes.created_at,' .
             'ordenes.estado,users.usuario,ordenes.formaPago,ordenes.banco,ordenes.total,' .
                 'CONCAT("[",GROUP_CONCAT(CONCAT(' . "'" . '{"idarticulo":"' . "'," . 'detalle_ordenes.idarticulo' . 
                     ',' . "'" .'", "indice":' . "'," . 'detalle_ordenes.index' .
@@ -330,7 +329,7 @@ class OrdenController extends Controller
            
             ->groupby('ordenes.id','ordenes.nombre_cliente', 'personas.nombre','personas.tipo_documento','personas.num_documento',
         'personas.direccion','personas.email',
-        'personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino', 'ordenes.distrito',
+        'personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino','ordenes.idShopify','ordenes.slot', 'ordenes.distrito',
                 'ordenes.deposito', 'ordenes.observacion', 'ordenes.created_at','ordenes.fecha_entrega',
                 'ordenes.estado', 'users.usuario','ordenes.formaPago','ordenes.banco', 'ordenes.total')
             ->orderBy('ordenes.id', 'ordenes.ruta','desc')->paginate(1000);
@@ -396,7 +395,7 @@ class OrdenController extends Controller
                 ->select(DB::raw('ordenes.id,ordenes.nombre_cliente,personas.nombre,personas.tipo_documento,personas.num_documento,
         if(ordenes.destino is NULL,personas.direccion,ordenes.destino) destino,personas.email,
          personas.telefono as telefonoCliente,ordenes.ruta as rutas,ordenes.telefono,ordenes.created_at,' .
-                    'ordenes.distrito,ordenes.deposito,ordenes.observacion,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega,' .
+         'ordenes.idShopify,ordenes.slot,ordenes.distrito,ordenes.deposito,ordenes.observacion,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega,' .
                     'ordenes.estado,users.usuario,ordenes.formaPago,ordenes.banco,ordenes.total,' .
                     'CONCAT("[",GROUP_CONCAT(CONCAT(' . "'" . '{"idarticulo":"' . "'," . 'detalle_ordenes.idarticulo' . 
                         ',' . "'" .'", "indice":' . "'," . 'detalle_ordenes.index' .
@@ -410,7 +409,7 @@ class OrdenController extends Controller
                 ->whereBetween('ordenes.fecha_entrega', [$fechaIni, $fechaFin])
                 
                 ->groupby('ordenes.id','ordenes.nombre_cliente', 'personas.nombre','personas.tipo_documento','personas.num_documento',
-                    'personas.direccion','personas.email','personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino', 
+                    'personas.direccion','personas.email','personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino','ordenes.idShopify','ordenes.slot', 
                     'ordenes.distrito','ordenes.deposito', 'ordenes.observacion','ordenes.created_at', 'ordenes.fecha_entrega',
                     'ordenes.estado', 'users.usuario','ordenes.formaPago','ordenes.banco', 'ordenes.total')
                 ->orderBy('ordenes.id', 'desc')->get();
@@ -585,7 +584,7 @@ class OrdenController extends Controller
             ->select(DB::raw('ordenes.id,ordenes.nombre_cliente,personas.nombre,personas.tipo_documento,personas.num_documento,
         personas.direccion,personas.email,
          personas.telefono as telefonoCliente,ordenes.ruta as rutas,ordenes.telefono,' .
-                'ordenes.destino Direccion_entrega,ordenes.distrito,ordenes.deposito,ordenes.observacion,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega,' .
+                'ordenes.destino Direccion_entrega,ordenes.distrito,ordenes.idShopify,ordenes.slot,ordenes.deposito,ordenes.observacion,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega,' .
                 'ordenes.estado,users.usuario,ordenes.formaPago,ordenes.banco,ordenes.total,' .
                 'CONCAT("[",GROUP_CONCAT(CONCAT(' . "'" . '{"idarticulo":"' . "'," . 'detalle_ordenes.idarticulo' . 
                     ',' . "'" .'", "indice":' . "'," . 'detalle_ordenes.index' .
@@ -597,7 +596,7 @@ class OrdenController extends Controller
            
             ->groupby('ordenes.id','ordenes.nombre_cliente', 'personas.nombre','personas.tipo_documento','personas.num_documento',
         'personas.direccion','personas.email',
-        'personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino', 'ordenes.distrito',
+        'personas.telefono','ordenes.ruta', 'ordenes.telefono', 'ordenes.destino','ordenes.idShopify','ordenes.slot', 'ordenes.distrito',
                 'ordenes.deposito', 'ordenes.observacion', 'ordenes.fecha_entrega',
                 'ordenes.estado', 'users.usuario','ordenes.formaPago','ordenes.banco', 'ordenes.total')
             ->orderBy('ordenes.id', 'ordenes.ruta','desc')->paginate(5);
@@ -693,7 +692,7 @@ class OrdenController extends Controller
                 $ordenes->ruta = 'RUTA-50';
 
                 if($distrito=='BREÑA' || $distrito == 'RIMAC' ||  $distrito == 'SJL')
-                $ordenes->ruta = 'RUTA-55';
+                $ordenes->ruta = 'RUTA-50';
 
                 
                 if($distrito == "RECOGER SAN ISIDRO" || $distrito == "RECOGER EN GALVEZ" || $distrito == "RECOGER EN SURCO"  )

@@ -111,119 +111,95 @@
                                         </template>
 
                                         <template v-slot:row-details="row">
-                                            <b-card>
-                                                <b-row>
-                                                    <b-col sm="2" class="text-sm-right"><b>Dni o Ruc:</b></b-col>
-                                                    <b-col>{{ row.item.num_documento }}</b-col>
+                                           <b-row>
+                                               <b-col lg="4">
+                                                <b-card>
+                                                    <b-row><b-col md="12" ><b>Dni o Ruc: </b>{{ row.item.num_documento }}</b-col></b-row>                              
+                                                    <b-row><b-col  md="12" ><b>Teléfono: </b>{{ row.item.telefonoCliente }}</b-col> </b-row>
+                                                    <b-row>
+                                                        <b-col  md="12" v-if="row.item.destino == null"><b>Direccion de Entrega:</b>{{ row.item.direccion }}</b-col>
+                                                        <b-col  md="12" v-else><b>Direccion de Entrega: </b>{{ row.item.destino }}</b-col>
+                                                    </b-row>
+                                                    <b-row><b-col md="12" ><b># Pedido Shopify: </b>{{ row.item.idShopify }}</b-col></b-row>                              
+                                                    <b-row><b-col  md="12" ><b>Slot Hora de Entrega: </b>{{ row.item.slot }}</b-col> </b-row>
+                                                    <b-row><b-col md="12" ><b>Email: </b>{{ row.item.email }}</b-col></b-row>                              
+                                                    <b-row><b-col  md="12" ><b>Distrito: </b>{{ row.item.distrito }}</b-col> </b-row>
+                                                    <b-row><b-col md="12" ><b>Email: </b>{{ row.item.email }}</b-col></b-row>                              
+                                                    <b-row><b-col  md="12" ><b>Nro de Deposito o Pago: </b>{{ row.item.deposito }}</b-col> </b-row>
+                                                    <b-row v-if="row.item.observacion!=null"><b-col  md="12" ><b>Observaciones: </b>{{ row.item.observacion }}</b-col> </b-row>
+                                                    <br>                                                
+                                                    <b-row v-if="row.item.nombre_cliente != null"><b-col  md="12" ><b>Contacto: </b>{{ row.item.nombre_cliente }}</b-col></b-row>
+                                                    <b-row v-if="row.item.nombre_cliente != null"><b-col  md="12" ><b>Telf. Contacto: </b>{{ row.item.nombre_telefono }}</b-col></b-row>
+                                                    <br>
+                                                    <b-button size="sm" @click="row.toggleDetails">Ocultar Detalles
+                                                    </b-button>
+                                                </b-card>
+                                               </b-col>
+                                               <b-col lg="8">
+                                                <b-card>
+                                                    <div>
+                                                        <!--  <b-table :items="listarDetalle(row.item.items)" :fields="fieldsD" striped responsive="sm"></b-table> -->
+                                                        <div class="table-responsive col-md-12">
+                                                            <table class="table table-striped table-sm">
+                                                                <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <th>Opciones</th>
+                                                                        <th>Artículo</th>
+                                                                        <th>Precio</th>
+                                                                        <th>Cantidad</th>
+                                                                        <th>Subtotal</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr v-for="detalle in sortJSON(JSON.parse(row.item.items),'indice','asc')"
+                                                                        v-bind:key="detalle.indice">
+                                                                        <slot v-bind:detalle="detalle">
+                                                                            <td>
+                                                                                <template
+                                                                                    v-if="!isRole || detalle.comentario !='Modificador'">
+                                                                                    <button type="button"
+                                                                                        :disabled="detalle.precio == 0"
+                                                                                        class="btn btn-danger btn-sm btn-xs"
+                                                                                        @click="cortesia(row.item.id,detalle.idarticulo,detalle.precio*detalle.cantidad)">
+                                                                                        <i class="fa fa-gift fa-xs"></i>
+                                                                                    </button>
+                                                                                </template>
 
-                                                    <b-col sm="2" class="text-sm-right"><b>Teléfono:</b></b-col>
-                                                    <b-col>{{ row.item.telefonoCliente }}</b-col>
+                                                                                <i v-if="detalle.comentario == 'Modificador'"
+                                                                                    class="far fa-hand-point-right  btn btn-primary btn-xs"></i>
 
-                                                    <b-col sm="2" class="text-sm-right"><b>Direccion de Entrega:</b>
-                                                    </b-col>
+                                                                            </td>
+                                                                            <td v-if="detalle.comentario == 'Modificador'">
+                                                                                |-----> {{ detalle.articulo }}
+                                                                            </td>
+                                                                            <td v-else>
+                                                                                {{ detalle.articulo }}
+                                                                            </td>
+                                                                            <td v-text="detalle.precio">
+                                                                            </td>
+                                                                            <td v-text="detalle.cantidad">
+                                                                            </td>
+                                                                            <td>
+                                                                                {{detalle.precio*detalle.cantidad}}
+                                                                            </td>
 
-                                                    <b-col v-if="row.item.destino == null">{{ row.item.direccion }}
-                                                    </b-col>
-                                                    <b-col v-else>{{ row.item.destino }}</b-col>
+                                                                        </slot>
+                                                                    </tr>
 
-
-                                                </b-row>
-                                                <br>
-                                                <br>
-
-                                                <b-row>
-                                                    <b-col sm="2" class="text-sm-right"><b>Email:</b></b-col>
-                                                    <b-col>{{ row.item.email }}</b-col>
-
-                                                    <b-col sm="2" class="text-sm-right"><b>Distrito:</b></b-col>
-                                                    <b-col>{{ row.item.distrito }}</b-col>
-
-                                                    <b-col sm="2" class="text-sm-right"><b>Nro Deposito:</b></b-col>
-                                                    <b-col>{{ row.item.deposito }}</b-col>
-
-                                                </b-row>
-                                                <br>
-                                                <br>
-                                                <b-row>
-                                                    <b-col sm="2" class="text-sm-right"><b>Observación:</b></b-col>
-                                                    <b-col>{{ row.item.observacion }}</b-col>
-                                                </b-row>
-                                                <br>
-                                                <br>
-                                                <b-row v-if="row.item.nombre_cliente != null">
-                                                    <b-col sm="2" class="text-sm-right"><b>Contacto:</b></b-col>
-                                                    <b-col>{{ row.item.nombre_cliente }}</b-col>
-
-                                                    <b-col sm="2" class="text-sm-right"><b>Telf. Contacto:</b></b-col>
-                                                    <b-col>{{ row.item.telefono }}</b-col>
-
-                                                </b-row>
-                                                <br>
-                                                <b-button size="sm" @click="row.toggleDetails">Ocultar Detalles
-                                                </b-button>
-                                            </b-card>
-                                            <b-card>
-                                                <div>
-                                                    <!--  <b-table :items="listarDetalle(row.item.items)" :fields="fieldsD" striped responsive="sm"></b-table> -->
-                                                    <div class="table-responsive col-md-12">
-                                                        <table class="table table-striped table-sm">
-                                                            <thead class="thead-dark">
-                                                                <tr>
-                                                                    <th>Opciones</th>
-                                                                    <th>Artículo</th>
-                                                                    <th>Precio</th>
-                                                                    <th>Cantidad</th>
-                                                                    <th>Subtotal</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr v-for="detalle in sortJSON(JSON.parse(row.item.items),'indice','asc')"
-                                                                    v-bind:key="detalle.indice">
-                                                                    <slot v-bind:detalle="detalle">
-                                                                        <td>
-                                                                            <template
-                                                                                v-if="!isRole || detalle.comentario !='Modificador'">
-                                                                                <button type="button"
-                                                                                    :disabled="detalle.precio == 0"
-                                                                                    class="btn btn-danger btn-sm btn-xs"
-                                                                                    @click="cortesia(row.item.id,detalle.idarticulo,detalle.precio*detalle.cantidad)">
-                                                                                    <i class="fa fa-gift fa-xs"></i>
-                                                                                </button>
-                                                                            </template>
-
-                                                                            <i v-if="detalle.comentario == 'Modificador'"
-                                                                                class="far fa-hand-point-right  btn btn-primary btn-xs"></i>
-
+                                                                    <tr style="background-color: #CEECF5;">
+                                                                        <td colspan="4" align="right"><strong>Total
+                                                                                Neto:</strong></td>
+                                                                        <td class="font-weight-bold">S. {{row.item.total}}
                                                                         </td>
-                                                                        <td v-if="detalle.comentario == 'Modificador'">
-                                                                            |-----> {{ detalle.articulo }}
-                                                                        </td>
-                                                                        <td v-else>
-                                                                            {{ detalle.articulo }}
-                                                                        </td>
-                                                                        <td v-text="detalle.precio">
-                                                                        </td>
-                                                                        <td v-text="detalle.cantidad">
-                                                                        </td>
-                                                                        <td>
-                                                                            {{detalle.precio*detalle.cantidad}}
-                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
 
-                                                                    </slot>
-                                                                </tr>
-
-                                                                <tr style="background-color: #CEECF5;">
-                                                                    <td colspan="4" align="right"><strong>Total
-                                                                            Neto:</strong></td>
-                                                                    <td class="font-weight-bold">S. {{row.item.total}}
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-
-                                                        </table>
+                                                            </table>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </b-card>
+                                                </b-card>
+                                               </b-col>
+                                           </b-row>
                                         </template>
 
                                     </b-table>
@@ -1508,8 +1484,7 @@
                     'existe': 0,
                     'observacion': this.observacion,
                     'idShopify' : '',
-                    'shipping_zip': '',
-                    'billing_zip': '',
+                    'slot':'',
                     'servicio' : '',
                     'data': this.arrayDetalle
 
