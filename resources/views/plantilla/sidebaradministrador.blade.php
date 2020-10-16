@@ -103,6 +103,12 @@
                             <li @click="menu=20" class="nav-item">
                                 <a class="nav-link" href="#"><i class="icon-chart"></i> Rpt Cons. Art Receta</a>
                             </li>
+                            <li @click="menu=23" class="nav-item">
+                                <a class="nav-link" href="#"><i class="icon-chart"></i> Rpt Det Venta/Usuario</a>
+                            </li>
+                            <li @click="menu=24" class="nav-item">
+                                <a class="nav-link" href="#"><i class="icon-chart"></i> Rpt Cons. Venta/Usuario</a>
+                            </li>
                         </ul>
                     </li>
                     <li @click="menu=11" class="nav-item">

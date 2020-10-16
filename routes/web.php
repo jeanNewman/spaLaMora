@@ -170,6 +170,7 @@ Route::group(['middleware'=>['auth']],function(){
         Route::get('/orden/obtenerPagos', 'OrdenController@obtenerPagos');
         Route::get('/orden/obtenerComentario', 'OrdenController@obtenerComentario');
         Route::get('/orden/obtenerCabeceraAll', 'OrdenController@obtenerCabeceraAll');
+        Route::get('/orden/obtenerInfoPorUsuarios', 'OrdenController@obtenerInfoPorUsuarios');
         Route::get('/orden/getExist', 'OrdenController@getExist');
         Route::get('/orden/personaStore', 'OrdenController@personaStore');
         Route::get('/orden/getClienteId', 'OrdenController@getClienteId');

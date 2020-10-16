@@ -120,6 +120,14 @@
             title: 'Nro. Pedido'
 
           }, {
+            field: 'idShopify',
+            title: '# Shopify'
+
+          }, {
+            field: 'slot',
+            title: 'Hora Entrega'
+
+          }, {
             field: 'rutas',
             title: 'Ruta'
 

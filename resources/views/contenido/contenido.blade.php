@@ -73,6 +73,13 @@
             <template v-if="menu==19">
                 <rptpagos :ruta="ruta" :rpt="coment"></rptpagos>
             </template>
+            <template v-if="menu==23">
+                <rptpagos :ruta="ruta" :rpt="det_serv"></rptpagos>
+            </template>
+            <template v-if="menu==24">
+                <rptpagos :ruta="ruta" :rpt="con_serv"></rptpagos>
+            </template>
+
             <template v-if="menu==20">
                 <consolidadoarticuloreceta :ruta="ruta"></consolidadoarticuloreceta>
             </template>
@@ -116,6 +123,13 @@
 
             <template v-if="menu==19">
                 <rptpagos :ruta="ruta" :rpt="coment"></rptpagos>
+            </template>
+
+            <template v-if="menu==23">
+                <rptpagos :ruta="ruta" :rpt="det_serv"></rptpagos>
+            </template>
+            <template v-if="menu==24">
+                <rptpagos :ruta="ruta" :rpt="con_serv"></rptpagos>
             </template>
 
             <template v-if="menu==11">

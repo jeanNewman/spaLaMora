@@ -190,6 +190,54 @@ class OrdenController extends Controller
     }
     }
     
+    public function obtenerInfoPorUsuarios(Request $request){
+        if (!$request->ajax()) {
+            return redirect('/');
+        }
+
+        $request->validate([
+
+            'fechaini' => 'required|date',
+            'fechafin' => 'required|date',
+        ]);
+
+        $fechaIni = Carbon::parse($request->fechaini)
+            ->startOfDay() // 2018-09-29 00:00:00.000000
+            ->toDateString(); // 2018-09-29 00:00:00
+
+        $fechaFin = Carbon::parse($request->fechafin)
+            ->endOfDay() // 2018-09-29 23:59:59.000000
+            ->toDateString(); // 2018-09-29 23:59:59
+            $tabla = 'ordenes.';
+            $buscar = $request->buscar;
+            $criterio = $request->criterio;
+            $value = $request->value;    
+            if ($criterio === 'usuario') 
+                $tabla = 'users.';
+              
+        if ($value==='1'){
+         
+        $ordenes = Orden::join('users','ordenes.idusuario','=','users.id')
+            ->select(DB::raw('ordenes.id,ordenes.created_at,users.usuario,ordenes.total' ))
+            ->where($tabla . $criterio, 'like', '%' . $buscar . '%')
+            ->whereBetween('ordenes.created_at', [$fechaIni, $fechaFin])
+            ->orderBy('ordenes.id', 'desc')->get();
+        }else{
+            $ordenes = Orden::join('users','ordenes.idusuario','=','users.id')
+            ->select(DB::raw("DATE_FORMAT(ordenes.created_at, '%Y-%m-%d') created_at,users.usuario,count(*) transaccion,sum(ordenes.total) total" ))
+            ->where($tabla . $criterio, 'like', '%' . $buscar . '%')
+            ->where('ordenes.estado','=','Registrado')
+            ->whereBetween('ordenes.created_at', [$fechaIni, $fechaFin])
+            ->groupBy(DB::raw("DATE_FORMAT(ordenes.created_at, '%Y-%m-%d'),users.usuario"))
+            ->orderBy(DB::raw("DATE_FORMAT(ordenes.created_at, '%Y-%m-%d'),users.usuario"),'desc')->get();
+        }
+
+            return ['ordenes' => $ordenes];
+    }
+
+
+
+
     public function obtenerPagos(Request $request){
         if (!$request->ajax()) {
             return redirect('/');
@@ -251,7 +299,7 @@ class OrdenController extends Controller
 
         $ordenes = Orden::join('users','ordenes.idusuario','=','users.id')
             ->join('detalle_ordenes','ordenes.id','=','detalle_ordenes.idordenes')
-            ->select(DB::raw('ordenes.id, users.usuario,detalle_ordenes.articulo,detalle_ordenes.observacion' ))
+            ->select(DB::raw('ordenes.id, users.usuario,detalle_ordenes.articulo,detalle_ordenes.cantidad,detalle_ordenes.observacion' ))
             ->where($tabla . $criterio, 'like', '%' . $buscar . '%')
             ->whereBetween('ordenes.fecha_entrega', [$fechaIni, $fechaFin])
             ->where('detalle_ordenes.observacion','!=','Modificador')
@@ -314,7 +362,7 @@ class OrdenController extends Controller
             ->join('detalle_ordenes', 'ordenes.id', '=', 'detalle_ordenes.idordenes')
             ->select(DB::raw('ordenes.id,DATE_FORMAT(ordenes.fecha_entrega, "%Y-%m-%d") as fecha_entrega, ordenes.ruta as rutas,ordenes.distrito,personas.nombre,'.
             'personas.tipo_documento,personas.num_documento,personas.direccion,personas.email,personas.telefono as telefonoCliente,'.
-            'ordenes.nombre_cliente,ordenes.telefono,ordenes.destino, ,ordenes.idShopify,ordenes.slot,ordenes.deposito,ordenes.observacion,ordenes.created_at,' .
+            'ordenes.nombre_cliente,ordenes.telefono,ordenes.destino ,ordenes.idShopify,ordenes.slot,ordenes.deposito,ordenes.observacion,ordenes.created_at,' .
             'ordenes.estado,users.usuario,ordenes.formaPago,ordenes.banco,ordenes.total,' .
                 'CONCAT("[",GROUP_CONCAT(CONCAT(' . "'" . '{"idarticulo":"' . "'," . 'detalle_ordenes.idarticulo' . 
                     ',' . "'" .'", "indice":' . "'," . 'detalle_ordenes.index' .
@@ -668,6 +716,7 @@ class OrdenController extends Controller
                 $ordenes->idusuario = \Auth::user()->id;
                 $ordenes->nombre_cliente = $request->nombre_cliente;
                 $ordenes->telefono = $request->telefono;
+               
                 if ($tipo == true) {
                     if (($distrito == 'SAN ISIDRO' || $distrito == 'BARRANCO' || $distrito == 'MIRAFLORES' || 
                         $distrito == 'MAGDALENA' ||  $distrito == 'LINCE' || $distrito == 'CHORRILLOS' ||
@@ -703,6 +752,7 @@ class OrdenController extends Controller
                 
                 $ordenes->destino = $request->destino;
                 $ordenes->idShopify = $request->idShopify;
+                $ordenes->slot = $request->slot;
                 $ordenes->distrito = $distrito;
                 $ordenes->deposito = $request->deposito;
                 $ordenes->total = $request->total;

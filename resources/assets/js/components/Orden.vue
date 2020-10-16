@@ -82,10 +82,7 @@
                                     <b-table :items="items" :fields="fields" striped responsive="sm">
                                         <template v-slot:cell(opciones)="orden">
 
-                                            <button type="button" @click="verOrden(orden.item.id)"
-                                                class="btn btn-success btn-xs">
-                                                <i class="icon-eye fa-xs"></i>
-                                            </button> &nbsp;
+                                           
                                             <button :disabled="isRole" type="button" @click="cambiarRuta(orden.item.id)"
                                                 class="btn btn-info btn-xs">
                                                 <i class="fa fa-sitemap fa-xs"></i>
@@ -120,11 +117,11 @@
                                                         <b-col  md="12" v-if="row.item.destino == null"><b>Direccion de Entrega:</b>{{ row.item.direccion }}</b-col>
                                                         <b-col  md="12" v-else><b>Direccion de Entrega: </b>{{ row.item.destino }}</b-col>
                                                     </b-row>
-                                                    <b-row><b-col md="12" ><b># Pedido Shopify: </b>{{ row.item.idShopify }}</b-col></b-row>                              
+                                                    <b-row><b-col md="12" ><b># Pedido Shopify: </b>{{ row.item.idShopify!=null?row.item.idShopify.replace(/H/g, "#"):'' }}</b-col></b-row>                              
                                                     <b-row><b-col  md="12" ><b>Slot Hora de Entrega: </b>{{ row.item.slot }}</b-col> </b-row>
                                                     <b-row><b-col md="12" ><b>Email: </b>{{ row.item.email }}</b-col></b-row>                              
                                                     <b-row><b-col  md="12" ><b>Distrito: </b>{{ row.item.distrito }}</b-col> </b-row>
-                                                    <b-row><b-col md="12" ><b>Email: </b>{{ row.item.email }}</b-col></b-row>                              
+                                                                                
                                                     <b-row><b-col  md="12" ><b>Nro de Deposito o Pago: </b>{{ row.item.deposito }}</b-col> </b-row>
                                                     <b-row v-if="row.item.observacion!=null"><b-col  md="12" ><b>Observaciones: </b>{{ row.item.observacion }}</b-col> </b-row>
                                                     <br>                                                

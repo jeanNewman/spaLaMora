@@ -17,6 +17,9 @@ import Vue from 'vue'
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import moment from 'moment';
 import VueMoment from 'vue-moment';
+import VueEllipseProgress from 'vue-ellipse-progress';
+
+
 
   
 
@@ -30,6 +33,7 @@ Vue.use(VueMoment, { moment });
 
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
+Vue.use(VueEllipseProgress)
 
 
 
@@ -75,7 +79,10 @@ const app = new Vue({
         notifications: [],
         ruta: 'http://localhost:84/sistema/public',
         pago: 'pago',
-        coment: 'coment'
+        coment: 'coment',
+        det_serv: 'det_serv',
+        con_serv: 'con_serv'
+
     },
     created() {
         let me = this;     

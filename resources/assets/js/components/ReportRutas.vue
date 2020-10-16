@@ -67,11 +67,11 @@
              
               <div class="col-md-6">
                 <div class="form-group">
-                  <button type="submit" @click="listarPedidos(1,buscar,criterio,fechaIni,fechaFin,criterio2,fechaCreacion)"
-                    class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>
-                  <button @click="pdfOrden(1,buscar,criterio,fechaIni,fechaFin,criterio2,fechaCreacion)" class="btn btn-primary btn-sm">Despacho PDF</button>
-                  <button @click="pdfOrden(2,buscar,criterio,fechaIni,fechaFin,criterio2,fechaCreacion)" class="btn btn-primary btn-sm">Cajera PDF</button>
-                  <button  class="btn btn-primary btn-sm"> <export-excel :data="arrayExcel">
+                  <button type="submit" @click="listarPedidos(1,buscar,criterio,fechaIni,fechaFin,criterio2,fechaCreacion,1)"
+                    class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Despacho</button>
+                   <button type="submit" @click="listarPedidos(1,buscar,criterio,fechaIni,fechaFin,criterio2,fechaCreacion,2)"
+                    class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Cajera</button>  
+                    <button  class="btn btn-primary btn-sm"> <export-excel :data="arrayExcel">
                     <i class=" fa fa-file-excel-o"></i> Exportar a Excel 
                   </export-excel>
                   </button>
@@ -87,11 +87,150 @@
                     <div ref="pdf" class="table-responsive col-md-12">
                       <table id="my-table" class="table table-borderless  table-sm">
                         <tbody v-if="arrayOrden.length">
+                          <h1 v-if="vista==1">Reporte Despacho</h1>
+                           <h1 v-if="vista==2">Reporte Cajera</h1>
+                           <br>
                           <tr v-for="orden in arrayOrden" :key="orden.id">
+                            <template v-if="vista==1">
+                            <h3># Pedido: {{ orden.id }}</h3>
+                            <hr style="color: #0056b2;" />
+                             
+                                           <b-row>
+                                               <b-col lg="4">
+                                                <b-card>
+                                                    <b-row><b-col md="12" ><b># Pedido: </b>{{ orden.id }}</b-col></b-row> 
+                                                    <b-row><b-col md="12" ><b># Pedido Shopify: </b>{{ orden.idShopify!=null?orden.idShopify.replace(/H/g, "#"):'' }}</b-col></b-row>                              
+                                                    <b-row><b-col  md="12" ><b>Fecha De Entrega: </b>{{ orden.fecha_entrega }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Slot Hora de Entrega: </b>{{ orden.slot }}</b-col> </b-row>                             
+                                                    <b-row><b-col  md="12" ><b>Fecha De Registro: </b>{{ orden.created_at }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Ruta: </b>{{ orden.rutas }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Distrito: </b>{{ orden.distrito }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Cliente: </b>{{ orden.nombre }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Dirección: </b>{{ orden.direccion }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Observación: </b>{{ orden.observacion }}</b-col> </b-row>
+                                                   <template v-if="orden.nombre_cliente!=null"> 
+                                                    <b-row><b-col  md="12" ><b>Contacto: </b>{{ orden.nombre_cliente }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Teléfono Contacto: </b>{{ orden.telefono }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Direccion de Entrega: </b>{{ orden.destino}}</b-col> </b-row>
+                                                   </template>
 
-                            <div class="form-group row border">
+                                                </b-card>
+                                               </b-col>
+                                               <b-col lg="8">
+                                                <b-card>
+                                                   <div class="form-group">
+                                                    <div class="table-responsive col-lg-12 col-md-12 col-sm-12">
+                                                      <table class="table table-bordered table-striped table-sm">
+                                                        <thead class="thead-dark">
+                                                          <tr>
+                                                            <th>Código</th>
+                                                            <th>Artículo</th>
+                                                            <th>Cantidad</th>
+                                                            <th>Comentario</th>
 
-                              <!-- primera linea -->
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          <tr v-for="detalle in listarDetalle(orden.items) " :key="detalle.id">
+                                                            <td v-text="detalle.idarticulo">
+                                                            </td>
+                                                            <td v-text="detalle.articulo">
+                                                            </td>
+
+                                                            <td v-text="detalle.cantidad">
+                                                            </td>
+                                                            <td v-text="detalle.comentario">
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+
+                                                      </table>
+                                                    </div>
+                                                  </div>
+                                                </b-card>
+                                               </b-col>
+                                           </b-row>
+                            </template>
+                             <template v-if="vista==2">
+                            <h2># Pedido: {{ orden.id }}</h2>
+                            <hr style="color: #0056b2;" />
+                             
+                                           <b-row>
+                                               <b-col lg="4">
+                                                <b-card>
+                                                    <b-row><b-col md="12" ><b># Pedido: </b>{{ orden.id }}</b-col></b-row> 
+                                                    <b-row><b-col md="12" ><b># Pedido Shopify: </b>{{ orden.idShopify!=null?orden.idShopify.replace(/H/g, "#"):'' }}</b-col></b-row>                              
+                                                    <b-row><b-col  md="12" ><b>Fecha De Entrega: </b>{{ orden.fecha_entrega }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Tipo de Documento: </b>{{ orden.tipo_documento }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b># Documento: </b>{{ orden.num_documento }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Cliente: </b>{{ orden.nombre }}</b-col> </b-row>
+                                                                                                       
+                                                    <b-row><b-col  md="12" ><b>Distrito: </b>{{ orden.distrito }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Dirección: </b>{{ orden.direccion }}</b-col> </b-row>
+                                                   
+                                                    <b-row><b-col  md="12" ><b>Forma de Pago: </b>{{ orden.formaPago }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b># de Depósito: </b>{{ orden.deposito }}</b-col> </b-row>
+                                                    <b-row><b-col  md="12" ><b>Observación: </b>{{ orden.observacion }}</b-col> </b-row>
+                                                
+
+                                                </b-card>
+                                               </b-col>
+                                             <b-col lg="8">
+                                                <b-card>
+                                                    <div>
+                                                        <!--  <b-table :items="listarDetalle(row.item.items)" :fields="fieldsD" striped responsive="sm"></b-table> -->
+                                                        <div class="table-responsive col-md-12">
+                                                            <table class="table table-striped table-sm">
+                                                                <thead class="thead-dark">
+                                                                    <tr>
+                                                                        
+                                                                        <th>Artículo</th>
+                                                                        <th>Precio</th>
+                                                                        <th>Cantidad</th>
+                                                                        <th>Subtotal</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr v-for="detalle in listarDetalle(orden.items) " :key="detalle.id">
+                                                                        <slot v-bind:detalle="detalle">
+                                                                          
+                                                                            <td v-if="detalle.comentario == 'Modificador'">
+                                                                                |-----> {{ detalle.articulo }}
+                                                                            </td>
+                                                                            <td v-else>
+                                                                                {{ detalle.articulo }}
+                                                                            </td>
+                                                                            <td v-text="detalle.precio">
+                                                                            </td>
+                                                                            <td v-text="detalle.cantidad">
+                                                                            </td>
+                                                                            <td>
+                                                                                {{detalle.precio*detalle.cantidad}}
+                                                                            </td>
+
+                                                                        </slot>
+                                                                    </tr>
+
+                                                                    <tr style="background-color: #CEECF5;">
+                                                                        <td colspan="3" align="right"><strong>Total
+                                                                                Neto:</strong></td>
+                                                                        <td class="font-weight-bold">S. {{orden.total}}
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </b-card>
+                                               </b-col>
+                                           </b-row>
+                            </template>
+                            <br>
+                            <br>
+                       <!--      <div class="form-group row border">
+
+                              primeralinea
                               <div class="col-md-2">
                                 <div class="form-group">
                                   <label class="text-primary">id</label>
@@ -132,7 +271,7 @@
                               </div>
 
 
-                              <!-- segunda linea -->
+                              
 
                               <div class="col-md-6">
                                 <div class="form-group">
@@ -201,7 +340,7 @@
                                   </table>
                                 </div>
                               </div>
-                            </div>
+                            </div> -->
                           </tr>
                         </tbody>
                       </table>
@@ -247,18 +386,19 @@
         modal: 0,
         tituloModal: '',
         fechaCreacion:'2020-03-30',
+        vista:0,
         criterio2:">="
 
       }
     },
     methods: {
 
-      listarPedidos(valor, buscar, criterio, fechaIni, fechaFin,criterio2,fechaCreacion) {
+      listarPedidos(valor, buscar, criterio, fechaIni, fechaFin,criterio2,fechaCreacion,dato) {
 
         let me = this;
 
         //Obtener los datos del ingreso
-
+        me.vista = dato;
         var url = this.ruta + '/orden/obtenerCabeceraAll?fechaini=' + fechaIni + '&fechafin=' + fechaFin + '&buscar=' +
           buscar + '&criterio=' + criterio + '&criterio2=' + criterio2 + '&creacion=' + fechaCreacion;
 

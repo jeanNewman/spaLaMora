@@ -11,6 +11,8 @@
                     <div class="card-header">
                         <i v-if="rpt=='pago'" class="fa fa-align-justify">  Reporte de Pagos</i> 
                         <i v-if="rpt=='coment'" class="fa fa-align-justify">  Reporte de Comentarios</i>
+                        <i v-if="rpt=='det_serv'" class="fa fa-align-justify">  Reporte de Servicios Detalle</i>
+                        <i v-if="rpt=='con_serv'" class="fa fa-align-justify">  Reporte de Servicios Consolidado</i>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -40,7 +42,15 @@
                                     <input type="text" v-model="buscar" class="form-control form-control-sm"
                                         placeholder="Texto a buscar">
                                 </template>
+                                 <template v-if="(rpt != 'comment' && rpt != 'pago')">
+                                     <select v-model="criterio1" class="form-control form-control-sm">
+                                        <option v-for="filtroC in filtrosC" :value="filtroC.value" :key="filtroC.id">
+                                            {{filtroC.text}}</option>
+                                    </select>
+                                    <input type="text" v-model="buscar" class="form-control form-control-sm"
+                                        placeholder="Texto a buscar">
 
+                                 </template>
                                 </div>
 
                             </div>
@@ -63,6 +73,10 @@
                                     <button v-if="rpt == 'pago'" type="submit" @click="listarPagos(buscar,criterio,fechaIni,fechaFin)"
                                         class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>
                                      <button v-if="rpt == 'coment'" type="submit" @click="listarComentario(buscar,criterio1,fechaIni,fechaFin)"
+                                        class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>
+                                     <button v-if="rpt == 'det_serv'" type="submit" @click="listarPorUsuario(buscar,criterio1,fechaIni,fechaFin,1)"
+                                        class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>   
+                                      <button v-if="rpt == 'con_serv'" type="submit" @click="listarPorUsuario(buscar,criterio1,fechaIni,fechaFin,2)"
                                         class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>    
 
                                 </div>
@@ -77,6 +91,12 @@
                                   </template>
                                   <template v-if="rpt == 'coment'">
                                     <export-excel :data="arrayComentario">
+                                        <a class="btn btn-primary btn-sm"><i class=" fa fa-file-excel-o"></i>Exportar a
+                                            Excel </a>
+                                    </export-excel>
+                                  </template>
+                                  <template v-if="rpt == 'det_serv' || rpt == 'con_serv'">
+                                    <export-excel :data="arrayUsuario">
                                         <a class="btn btn-primary btn-sm"><i class=" fa fa-file-excel-o"></i>Exportar a
                                             Excel </a>
                                     </export-excel>
@@ -103,6 +123,21 @@
                                                  <BootstrapTable class="table table-borderless table-sm table-striped"
                                                    
                                                     :columns="fieldsC" :data="arrayComentario" :options="options">
+                                                </BootstrapTable>
+                                            </template>
+
+                                             <template v-if="rpt == 'det_serv'">
+                                                 <BootstrapTable class="table table-borderless table-sm table-striped"
+                                                   
+                                                    :columns="fieldsDet" :data="arrayUsuario" :options="options">
+                                                </BootstrapTable>
+                                            </template>
+
+                                             <template v-if="rpt == 'con_serv'">
+                                                 <BootstrapTable class="table table-borderless table-sm table-striped"
+                                                   
+                                                    :columns="fieldsCons" :data="arrayUsuario" :options="options" data-sort-name="created_at"
+                                                    data-sort-order="desc">
                                                 </BootstrapTable>
                                             </template>
                                         </div>
@@ -167,6 +202,48 @@
                     }
 
                 ],
+                  fieldsCons: [
+
+                    {
+                        field: 'created_at',
+                        title: 'Fecha de Creación',
+                        datasortable: 'true'
+
+                    }, {
+                        field: 'usuario',
+                        title: 'Usuario'
+
+                    }, {
+                        field: 'transaccion',
+                        title: 'Nro Transacciones'
+
+                    }, {
+                        field: 'total',
+                        title: 'Importe'
+
+                    },
+                 ],
+                 
+                 fieldsDet: [
+
+                    {
+                        field: 'created_at',
+                        title: 'Fecha de Creación'
+
+                    }, {
+                        field: 'usuario',
+                        title: 'Usuario'
+
+                    }, {
+                        field: 'id',
+                        title: 'Nro Pedido'
+
+                    }, {
+                        field: 'total',
+                        title: 'Importe'
+
+                    },
+                 ],
 
                  fieldsC: [
 
@@ -183,6 +260,10 @@
                         title: 'Articulo'
 
                     }, {
+                        field: 'cantidad',
+                        title: 'Cantidad'
+
+                    }, {
                         field: 'observacion',
                         title: 'Comentario'
 
@@ -197,6 +278,13 @@
                 filtrosC: [{
                         text: "Usuario",
                         value: "usuario",
+                        id: 1
+                    }
+
+                ],
+                filtrosS: [{
+                        text: "Servicios",
+                        value: "Servicios",
                         id: 1
                     }
 
@@ -270,6 +358,8 @@
                 arrayPagos: [],
                 arrayComentario:[],
                 arrayDetalle: [],
+                arrayUsuario: [],
+              
                 buscar: '',
                 criterio: 'formaPago',
                 criterio1: 'usuario',
@@ -316,6 +406,26 @@
                         var respuesta = response.data;
                        
                         me.arrayComentario = respuesta.ordenes;
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+            },
+              listarPorUsuario( buscar, criterio1, fechaIni, fechaFin,value) {
+
+                let me = this;
+
+                //Obtener los datos del ingreso
+
+                var url = this.ruta + '/orden/obtenerInfoPorUsuarios?fechaini=' + fechaIni + '&fechafin=' + fechaFin +
+                    '&buscar=' + buscar + '&criterio=' + criterio1 + '&value=' + value;
+
+                axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                       
+                        me.arrayUsuario = respuesta.ordenes;
                         
                     })
                     .catch(function (error) {

@@ -52,23 +52,23 @@ class ClienteController extends Controller
 
    public function getClienteId(Request $request){
        if (!$request->ajax()) return redirect('/');
-       
+       DB::enableQueryLog();
        if( Persona::where('nombre', '=',strtoupper($request->nombre) )->where('num_documento', '=', $request->num_documento)->exists()){ 
-                
+               if(strtoupper($request->nombre) === "JUAN PEREZ") dd(DB::getQueryLog());;
         $persona=Persona::select('id')->where('nombre', '=',strtoupper($request->nombre) )->where('num_documento', '=', $request->num_documento)->first();
         return[ 'last_insert_id' =>  $persona->id];
 
         }elseif( Persona::where('nombre', '=',strtoupper($request->nombre) )->where('email', '=', $request->email)->exists()){  
-                    
+            if(strtoupper($request->nombre) === "JUAN PEREZ") dd(DB::getQueryLog());;   
             $persona=Persona::select('id')->where('nombre', '=',strtoupper($request->nombre) ) ->where('email', '=', $request->email)->first();  
             return['last_insert_id' => $persona->id];
 
         }elseif( Persona::where('nombre', '=',strtoupper($request->nombre))->where('telefono', '=', $request->telefono)->exists()){  
-                    
+            if(strtoupper($request->nombre) === "JUAN PEREZ") dd(DB::getQueryLog());;  
             $persona=Persona::select('id')->where('nombre', '=',strtoupper($request->nombre))->where('telefono', '=', $request->telefono)->first();       
             return['last_insert_id' => $persona->id];
         }elseif( Persona::where('nombre', '=',strtoupper($request->nombre))->whereDate('created_at', DB::raw('CURDATE()'))->count()>0){  
-                    
+            if(strtoupper($request->nombre) === "JUAN PEREZ") dd(DB::getQueryLog());;  
             $persona=Persona::select('id')->where('nombre', '=',strtoupper($request->nombre))->whereDate('created_at', DB::raw('CURDATE()'))->first();       
             return['last_insert_id' => $persona->id];
         }else return['last_insert_id' => 0];
@@ -91,18 +91,18 @@ class ClienteController extends Controller
                 }elseif( Persona::where('nombre', '=',strtoupper($request->nombre) )->where('email', '=', $request->email)->exists()){  
                             
                     $persona=Persona::select('id')->where('nombre', '=',strtoupper($request->nombre) ) ->where('email', '=', $request->email)->first();  
-                    return['errorValid' => ['El Cliente '.$request->nombre.' con el Documento: '. $request->num_documento.' ya existe']
+                    return['errorValid' => ['El Cliente '.$request->nombre.' con el Correo: '. $request->num_documento.' ya existe']
                           ,'last_insert_id' => $persona->id];
         
                 }elseif( Persona::where('nombre', '=',strtoupper($request->nombre))->where('telefono', '=', $request->telefono)->exists()){  
                             
                     $persona=Persona::select('id')->where('nombre', '=',strtoupper($request->nombre))->where('telefono', '=', $request->telefono)->first();       
-                    return['errorValid' => ['El Cliente '.$request->nombre.' con el Documento: '. $request->num_documento.' ya existe']
+                    return['errorValid' => ['El Cliente '.$request->nombre.' con el Telefono: '. $request->telefono.' ya existe']
                           ,'last_insert_id' => $persona->id];
                 }elseif( Persona::where('nombre', '=',strtoupper($request->nombre))->whereDate('created_at', DB::raw('CURDATE()'))->count()>0){  
                             
                     $persona=Persona::select('id')->where('nombre', '=',strtoupper($request->nombre))->whereDate('created_at', DB::raw('CURDATE()'))->first();       
-                    return['errorValid' => ['El Cliente '.$request->nombre.' con el Documento: '. $request->num_documento.' ya existe']
+                    return['errorValid' => ['El Cliente '.$request->nombre.' creado hoy: '. DB::raw('CURDATE()').' ya existe']
                           ,'last_insert_id' => $persona->id];
                 }
                
