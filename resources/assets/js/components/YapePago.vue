@@ -5,7 +5,7 @@
     <div class="container">
         <div class="columns">
             <div class="column is-8 is-offset-2">
-                <horizontal-stepper :steps="demoSteps" :locale="es"
+                <horizontal-stepper :steps="demoSteps" :datos="datos"
                                     @active-step="isStepActive" @stepper-finished="alert"
                 >                     
                 </horizontal-stepper>
@@ -50,7 +50,8 @@ import HorizontalStepper from 'vue-stepper';
                         title: 'Subir Imagen',
                         subtitle: '',
                         component: StepTwo,
-                        completed: true
+                        completed: true,
+                        
                     }
                 ]
             }

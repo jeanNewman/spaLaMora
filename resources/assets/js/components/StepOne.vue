@@ -111,8 +111,10 @@ export default {
 		}
 	},
 	methods:{
+
 		inicializar(){
-			this.pasos = this.yapeo;
+            this.pasos = this.yapeo;
+            
 		},
 		tipoTituloPasos(valor){
 			this.value=valor;

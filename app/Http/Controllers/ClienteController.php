@@ -123,13 +123,25 @@ class ClienteController extends Controller
         }
         DB::commit();
         return [
+            'errorValid'  => 'undefined',
             'last_insert_id' => $persona->id
+            
         ];
     } catch (Exception $e) {
         DB::rollBack();
     }
         
     }
+
+    public function updateEspecial(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        $persona = Persona::findOrFail($request->id);
+        $persona->direccion = ($request->direccion);
+        $persona->telefono = $request->telefono;
+        $persona->email = $request->email;
+    }
+    
 
     public function update(Request $request)
     {

@@ -1482,7 +1482,6 @@
                     'observacion': this.observacion,
                     'idShopify' : '',
                     'slot':'',
-                    'servicio' : '',
                     'data': this.arrayDetalle
 
                 }).then(function (response) {

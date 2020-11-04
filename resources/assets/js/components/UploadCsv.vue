@@ -278,51 +278,53 @@
                 },
       
       arr :[],
+
+      // Variables para datos de entrega a la pesona que va dirigida la entrega (a la persona qeu va dirigida o aquien se le regala)
+        nombreClienteAdicional:'', // nombre_cliente : '',
+        tlfClienteAdicional:'', //tlfCliente
+        direccionClienteAdicional:'',//destino : '',
+        
+      //fin de datos de entrega
+
+      // Variables para datos de la persona que hace el pedido
+         idClientePedido :'', // clienteId : '',
+         nombreClientePedido:'',// nombre : '',
+         direccionClientePedido:'',// direccion : '',
+         tlfClientePedido:'',
+         emailClientePedido:'',// email : '',
+         tipoDocClientePedido:'',
+         numeroDocClientePedido:'',
+
+      //
+
+     /* //variables de articulos detalles
+          idarticulo: "",
+          articulo: "",
+          precio: "",
+          medida: "",
+          comentario: "",
+          adicional: '',
+       */
+      //variables de datos de pedido
+          distrito : '',      
+          formaPago : "",
+          banco : "",
+          deposito : "",        
+          total : 0,
+          observacion : '',
+          idShopify:'',
+          slot:'',
+
+     // variables de renvio a principal 
+          criterio:'estado',
+          buscar:'',
+          page:1,
+     //     
+
       fixed:false,
-      idarticulo: "",
-      articulo: "",
-      precio: "",
-      medida: "",
-      tipo: "",
-      comentario: "",
-      cantidad: "",
-      adicional: '',
-      nombre_cliente : '',
-      telefono : '',
-      tlfCliente:'',
-      destino : '',
-      distrito : '',
-      movilidad : '',
-      orden_entrega : '',
-      formaPago : "",
-      banco : "",
-      deposito : "",
-      importe_total : '',
-      total : 0,
-      observacion : '',
-      tipo : "",
-      cantidad : 0,
-      codigo : '',
-       nombre : '',
-      tipo_documento : 'DNI',
-      num_documento : '',
-      idJuntos :'',
-      direccion : '',
-     
-      email : '',
-      errorPersona : 0,
-      clienteId : '',
       success: '',
       result :'',
-      zip_shipping :'',
-      zip_billing:'',
-      servicio : '',
-      idShopify:'',
-      criterio:'estado',
-      buscar:'',
-      slot:'',
-      page:1
-
+ 
       };
     },
 
@@ -380,9 +382,9 @@
 
         };
 
-        window.location.href = this.ruta + '/orden?page=' + this.page + '&buscar=' + this.buscar + '&criterio=' + this.criterio +
+       /*  window.location.href = this.ruta + '/orden?page=' + this.page + '&buscar=' + this.buscar + '&criterio=' + this.criterio +
           '&buscar2=' + this.buscar + '&criterio2=' + this.criterio + '&buscar3=' + this.buscar + '&criterio3=' +
-          this.criterio;
+          this.criterio; */
 
 
         function devolverNoteAtributtes(element, buscar1, buscar2) {
@@ -449,12 +451,21 @@
 
         function agregarCabecera(element) {
 
+          // datos de cliente
+           let nombreClientePrincipal = ''; //nombre
+           let direccionClientePrincipal = ''; //direccionShipping
+           let tlfClientePrincipal= ''; //tlf
+           let emailClientePrincipal = '';
+         
+         // datos de cliente adicional
+           let nombreClienteAdicional = ''; // nombreCliente
+           let direccionClienteAdicional =''; //direcionBilling
+           let tlfClienteAdicional ='';
+
           let split = '';
           let dia = ''
-          let direccionShipping = ''
-          let direccionBilling = ''
-          let nombreCliente = ''
-          let tlf = ''
+         
+         
           let zona = "MIRAFLORES"
           let dividir = ""
           let delivery = 'Checkout-Method: delivery'
@@ -467,33 +478,31 @@
           let timeSlot =""
           let esDocumento=""
           let informacion =""
-          let coinciden = 0
+         
           let dniruc =""
          
           let referencia = ""
           let comparar = element.note_attributes
           let valor = 0
 
-          direccionShipping = element.shipping_street + " " + element.shipping_address1 + " " + element.shipping_address2+" "+ element.shipping_city
-          direccionBilling = element.billing_street + " " + element.billing_address1 + " " + element.billing_address2+" "+ element.billing_city
-          if (element.shipping_phone !== "") {
-            if (element.billing_phone !== "" && element.billing_phone === element.shipping_phone)
-              tlf = element.billing_phone
-            else
-              tlf = element.shipping_phone
-          } else if (element.phone !== "") {
-            tlf = element.phone
-          } else tlf = "VERIFICAR"
+         
+         nombreClientePrincipal = element.shipping_name;
+         direccionClientePrincipal = element.shipping_street + " " + element.shipping_address1 + " " + element.shipping_address2+" "+ element.shipping_city
+         emailClientePrincipal = element.email;
 
-          if (direccionShipping === direccionBilling) {
-            direccionShipping = ""
-            nombreCliente = ""
-            coinciden = 1
+         nombreClienteAdicional = element.billing_name;
+         direccionClienteAdicional = element.billing_street + " " + element.billing_address1 + " " + element.billing_address2+" "+ element.billing_city
+          tlfClientePrincipal = element.shipping_phone;
+           tlfClienteAdicional = element.billing_phone;
+        
+         if(element.shipping_phone === "" && element.billing_phone==="" && element.phone !== ""){
+            tlfClientePrincipal = element.phone;
+           tlfClienteAdicional = element.phone;
+         }
+            
+             
+          
 
-          } else {
-            nombreCliente = element.shipping_name
-
-          }
 
           dia = me.$moment(new Date()).format("DD-MM-YYYY")
           // split = dia.toString();
@@ -520,10 +529,10 @@
             split = dia.toString();
           }
 
-          if(isNaN(element.billing_company)){
-              informacion = coinciden==0?"No coloco DNI o RUC REVISAR":'';
+          if(isNaN(element.shipping_company)){
+              esDocumento = 'NA';
           }else{
-            dniruc = element.billing_company
+            dniruc = element.shipping_company;
              informacion = dniruc.length>11? informacion + 'Verificar el Ruc Tiene mas de 11 dígitos':''
              informacion = dniruc.length<6 && dniruc.length>0?informacion + 'Verificar el Dni o Ruc Tiene menos de 6 dígitos':''
              esDocumento = (dniruc.substr(0,2) == '10' || dniruc.substr(0,2) == '20')?'RUC':'DNI'
@@ -531,17 +540,16 @@
 
           }
           
-          me.nombre = element.billing_name
-          me.tipo_documento = esDocumento;
-          me.num_documento = isNaN(element.billing_company) ? '' : element.billing_company;
-          me.idJuntos = '';
-          me.direccion = direccionBilling.replace(/["']/g, "");
-          me.email = element.email;
-          me.errorPersona = 0;
-          me.nombre_cliente = nombreCliente;
-          me.telefono = tlf;
-          me.tlfCliente = tlf;
-          me.destino = direccionShipping.replace(/["']/g, "");
+          me.nombreClientePedido = nombreClientePrincipal;
+          me.direccionClientePedido = direccionClientePrincipal.replace(/["']/g, "");;
+          me.tlfClientePedido = tlfClientePrincipal;
+          me.emailClientePedido = emailClientePrincipal;
+          me.tipoDocClientePedido = esDocumento;
+          me.numeroDocClientePedido = dniruc;
+          me.nombreClienteAdicional = nombreClienteAdicional;
+          me.direccionClienteAdicional = direccionClienteAdicional.replace(/["']/g, "");;
+          me.tlfClienteAdicional = tlfClienteAdicional;
+                   
           me.distrito = zona;
           me.formaPago = element.payment_method==='custom'?'YAPE':element.payment_method;
           me.banco = element.payment_method==='custom'?'YAPE':element.payment_method;
@@ -549,7 +557,6 @@
           me.deposito = element.payment_reference === "" ? "NA" : element.payment_reference;
           me.total = element.total;
           me.observacion = element.notes.replace(/["']/g, "") + " - "+ informacion;
-          me.codigo = '';
           me.fecha_entrega = split;
           me.slot = timeSlot;
 
@@ -562,26 +569,41 @@
         let me = this
         try {
           let response = await axios.post(me.ruta + '/cliente/registrar', {
-            'nombre': me.nombre,
-            'tipo_documento': me.tipo_documento,
-            'num_documento': me.num_documento,
-            'id_juntos': me.idJuntos,
-            'direccion': me.direccion,
-            'telefono': me.tlfCliente,
-            'email': me.email
+            'nombre': me.nombreClientePedido,
+            'tipo_documento': 'NA',
+            'num_documento': '',
+            'id_juntos': '',
+            'direccion': me.direccionClientePedido,
+            'telefono': me.tlfClientePedido,
+            'email': me.emailClientePedido
           })
           if (response.status === 200) {
-            me.clienteId = response.data.last_insert_id;
-          }
-          me.nombre = '';
-          me.tipo_documento = 'DNI';
-          me.num_documento = '';
-          me.idJuntos = '';
-          me.direccion = '';
+            if(response.data.errorValid === 'undefined')
+              me.idClientePedido = response.data.last_insert_id;
+            else  {
+              me.idClientePedido = response.data.last_insert_id;
+              try {
+                let response1 = await axios.put(`${me.ruta}/cliente/updateEspecial`,{
+                  'id':me.idClientePedido,
+                  'direccion': me.direccionClientePedido,
+                  'telefono': me.tlfClientePedido,
+                  'email': me.emailClientePedido
+                })
+               if(response.status===200){
+                 console.log('actualizado');
+               } 
+              } catch (error) {
 
-          me.tlfCliente = '';
-          me.email = '';
-          me.errorPersona = 0;
+                console.log(error)
+
+              }
+            }
+          }
+          me.nombreClientePedido = '';
+          me.direccionClientePedido = '';
+          me.tlfClientePedido = '';
+          me.emailClientePedido = '';
+        
         } catch (error) {
 
           console.log(error)
@@ -597,10 +619,10 @@
         console.log(me.clienteID)
         try {
           let response = await axios.post(me.ruta + '/orden/registrar', {
-            'idCliente': me.clienteId,
-            'nombre_cliente': me.nombre_cliente,
-            'telefono': me.telefono,
-            'destino': me.destino,
+            'idCliente': me.idClientePedido,
+            'nombre_cliente': me.nombreClienteAdicional,
+            'telefono': me.tlfClienteAdicional,
+            'destino': me.direccionClienteAdicional,
             'distrito': me.distrito,
             'deposito': me.deposito,
             'fecha_entrega': me.fecha_entrega,
@@ -609,44 +631,23 @@
             'banco': me.banco,
             'existe': 1,
             'observacion': me.observacion,
-            'servicio': me.servicio,
-            'nombre': me.nombre,
-            'tipo_documento': me.tipo_documento,
-            'num_documento': me.num_documento,
-            'id_juntos': me.idJuntos,
-            'direccion': me.direccion,
-            'email': me.email,
             'idShopify': me.idShopify,
             'slot':me.slot,
             'data': detalle
 
           })
 
-          me.clienteId = '';
-          me.nombre_cliente = '';
-          me.telefono = '';
+          me.idClientePedido = '';
+          me.nombreClienteAdicional = '';
+          me.tlfClienteAdicional = '';
           me.destino = '';
-          me.distrito = '';
-          me.movilidad = '';
-          me.orden_entrega = '';
+          me.distrito = '';             
           me.formaPago = "";
           me.banco = "";
-          me.deposito = "";
-          me.importe_total = '';
+          me.deposito = "";         
           me.total = 0;
-          me.observacion = '';
-          me.tipo = "";
-          me.cantidad = 0;
-          me.codigo = '';
+          me.observacion = '';      
           me.slot='';
-          me.servicio = '';
-          me.nombre = '';
-          me.tipo_documento = 'DNI';
-          me.num_documento = '';
-
-          me.direccion = '';
-
-          me.email = '';
           me.idShopify = '';
           detalle = [];
 

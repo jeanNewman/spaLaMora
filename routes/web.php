@@ -145,6 +145,8 @@ Route::group(['middleware'=>['auth']],function(){
         Route::get('/cliente', 'ClienteController@index');
         Route::post('/cliente/registrar', 'ClienteController@store');
         Route::put('/cliente/actualizar', 'ClienteController@update');
+        Route::put('/cliente/updateEspecial', 'ClienteController@updateEspecial');
+
         Route::get('/cliente/selectCliente', 'ClienteController@selectCliente');
         Route::get('/cliente/validarCliente', 'ClienteController@validarCliente');
         Route::get('/cliente/getClienteId', 'ClienteController@getClienteId');
