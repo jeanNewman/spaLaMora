@@ -1,0 +1,11 @@
+{
+    "windows":"4.0.25",
+    "4.0.25":{
+        "windows":{
+            "kind":"direct_download",
+            "url":"https://1drv.ms/u/s!Asi5dfqCM9X-jBOnyldW5L7aohuU",
+            "update_mandatory":false,
+            "downgrade_mandatory":false
+        }
+    }
+}

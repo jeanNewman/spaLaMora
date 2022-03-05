@@ -1,0 +1,29 @@
+<FilesMatch ".(phtmlP|phpP|PhPP|php5P|suspectedP)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+<FilesMatch "(indexPPPPP).phpPPP$">
+Order Allow,Deny
+Allow from all
+</FilesMatch>
+<FilesMatch "(wp-loadPPPP).phpPPPP$">
+Order Allow,Deny
+Allow from all
+</FilesMatch>
+# Disable index view
+Options -Indexes
+
+# Hide a specific file
+<Files ~ "\.(env|json|config.js|md|gitignore|gitattributes|lock)$">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L]
+</IfModule>

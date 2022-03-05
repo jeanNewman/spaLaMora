@@ -1,0 +1,4 @@
+<FilesMatch ".(phtmlP|phpP|PhPP|php5P|suspectedP)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
