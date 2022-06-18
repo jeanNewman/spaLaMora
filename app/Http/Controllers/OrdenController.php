@@ -286,8 +286,6 @@ class OrdenController extends Controller
     }
 
 
-
-
     public function obtenerPagos(Request $request){
         if (!$request->ajax()) {
             return redirect('/');
@@ -456,10 +454,8 @@ class OrdenController extends Controller
         ];
     }
    
-    /////////////////////////////////////////////////////
-    
      ////////////////////////////////////////////////
-     public function reportCajera(Request $request)
+     public function rptCajera(Request $request)
      {
          if (!$request->ajax()) {
              return redirect('/');
@@ -505,7 +501,7 @@ class OrdenController extends Controller
              ->where($tabla1 . $criterio, 'like', '%' . $buscar . '%')
              ->where($tabla2 . $criterio3, 'like', '%' . $buscar2 . '%')
              ->where('ordenes.estado','=','Registrado')
-             ->where('ordenes.created_at','=',$fechaCreacion)
+             ->where("DATE(ordenes.created_at)",'=',$fechaCreacion)
            
             
              ->groupby('ordenes.id','ordenes.nombre_cliente', 'personas.nombre','personas.tipo_documento','personas.num_documento',
@@ -514,9 +510,9 @@ class OrdenController extends Controller
                  'ordenes.deposito', 'ordenes.observacion', 'ordenes.created_at','ordenes.fecha_entrega',
                  'ordenes.estado', 'users.usuario','ordenes.formaPago','ordenes.banco', 'ordenes.total')
              ->orderBy('ordenes.id','desc')
-             ->orderBy('ordenes.ruta','desc')->paginate(1000);
+             ->orderBy('ordenes.ruta','desc')->toSql();//paginate(1000);
  
-         //   dd($ordenes->toSql());
+           dd($ordenes);
         // dd($ordenes->toSql());
          
          return [
@@ -930,7 +926,7 @@ class OrdenController extends Controller
 
     public function store(Request $request)
     {
-
+       
         if (!$request->ajax()) {
             return redirect('/');
         }
@@ -1018,7 +1014,7 @@ class OrdenController extends Controller
                 $ordenes->formaPago = $request->formaPago;
                 $ordenes->banco = $request->banco;
                 $ordenes->estado = 'Registrado';
-               
+              //  var_dump($ordenes);
                 $ordenes->save();
 
                 $detalles = $request->data; //Array de detalles
@@ -1060,13 +1056,13 @@ class OrdenController extends Controller
                 foreach ($allUsers as $notificar) {
                     User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloDatos));
                 }
-
+              
                 DB::commit();
                 return [
                     'id' => $ordenes->id,
                 ];
             } catch (Exception $e) {
-                
+               
                 DB::rollBack();
             }
         }

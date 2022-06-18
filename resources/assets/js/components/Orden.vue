@@ -1636,6 +1636,7 @@
                         console.log(error);
                     });
             },
+
             async registrarPedido() {
                 if (await this.validarPedido()) {
                     return;
@@ -1687,9 +1688,10 @@
                     me.slot ='';
                     me.arrayDetalle = [];
                   //  window.open(this.ruta + '/orden/pdf/' + response.data.id + ',' + '_blank');
-
+                    console.log(response)
                 }).catch(function (error) {
                     console.log(error);
+                    console.log(response)
                 });
             },
 

@@ -61,7 +61,7 @@ Vue.component('orden', require('./components/Orden.vue'));
 Vue.component('consultaorden', require('./components/ConsultaOrden.vue'));
 Vue.component('reportrutas', require('./components/ReportRutas.vue'));
 Vue.component('rptdespacho', require('./components/RptDespacho.vue'));
-Vue.component('reportcajera', require('./components/ReportCajera.vue'));
+Vue.component('rptcajera', require('./components/RptCajera.vue'));
 Vue.component('rptpagos', require('./components/RptPagos.vue'));
 Vue.component('rptformapago', require('./components/RptFormaPago.vue'));
 Vue.component('rptconsolidadoslot', require('./components/RptConsolidadoSlot.vue'));
@@ -80,14 +80,14 @@ const app = new Vue({
     data :{
         menu : 0,
         notifications: [],
-        ruta: 'http://lamorapedidos.tk/public',
+        ruta: 'http://lamorapedido.tk/public',
         pago: 'pago',
         coment: 'coment',
         det_serv: 'det_serv',
         con_serv: 'con_serv'
 
     },
-    created() {
+   /*  created() {
         let me = this;     
         axios.post(this.ruta + '/notification/get').then(function(response) {
            //console.log(response.data);
@@ -102,5 +102,5 @@ const app = new Vue({
              me.notifications.unshift(notification); 
         }); 
         
-    }        
+    } */        
 });

@@ -100,7 +100,7 @@
                   let msgErr = ''
                   this.$moment.locale('es');
               
-                 let url = 'http://lamorapedidos.tk/public/yape/revisarImagen'
+                 let url = 'http://lamorapedido.tk/public/yape/revisarImagen'
                     try{
                        let response = await axios.get(url,{
                          params: {
@@ -198,7 +198,7 @@
               async mostrarItem(){
                 let me = this;  
                 
-                var url = 'http://lamorapedidos.tk/public/yape/revisarShopify?id=' + me.datos.nro_orden + '&img='+ me.yapeImgPago;
+                var url = 'http://lamorapedido.tk/public/yape/revisarShopify?id=' + me.datos.nro_orden + '&img='+ me.yapeImgPago;
                     try{
                        let response =await axios.get(url);
                         let respuesta = response.data[0].order;

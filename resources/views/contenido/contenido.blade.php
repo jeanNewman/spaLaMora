@@ -65,7 +65,7 @@
             </template>
 
             <template v-if="menu==28">
-                <reportcajera :ruta="ruta"></reportcajera>
+                <rptcajera :ruta="ruta"></rptcajera>
             </template>
 
             <template v-if="menu==17">
@@ -135,7 +135,7 @@
             </template>
 
             <template v-if="menu==28">
-                <reportcajera :ruta="ruta"></reportcajera>
+                <rptcajera :ruta="ruta"></rptcajera>
             </template>
 
             <template v-if="menu==19">

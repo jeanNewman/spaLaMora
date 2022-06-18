@@ -20,6 +20,7 @@ Route::group(['middleware'=>['guest']],function(){
     Route::get('/mainyape', function () {
         return view('yapepayment/yapepayment');
     })->name('mainyape');
+  
    
 });
 
@@ -95,7 +96,7 @@ Route::group(['middleware'=>['auth']],function(){
         Route::put('/orden/cortesia', 'OrdenController@cortesia');
         Route::put('/orden/cambiarruta', 'OrdenController@cambiarruta');
         Route::get('/orden/obtenerCabecera', 'OrdenController@obtenerCabecera');
-        Route::get('/orden/reportCajera', 'OrdenController@reportCajera');
+        Route::get('/orden/rptCajera', 'OrdenController@rptCajera');
         Route::get('/orden/obtenerDetalles', 'OrdenController@obtenerDetalles');
         Route::get('/orden/buscarConfiguracion', 'OrdenController@buscarConfiguracion');
         Route::get('/orden/consolidadoArticulo', 'OrdenController@consolidadoArticulo');

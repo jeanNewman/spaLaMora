@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<!--
+    WARNING! Make sure that you match all Quasar related
+    tags to the same version! (Below it's "@2.0.3")
+  -->
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet"
+        type="text/css">
+    <style>
+        .redColor {
+            color: #e40e20
+        }
+
+        .my-card {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .my-div {
+            display: block;
+            overflow: auto;
+        }
+
+        .first-line {
+            align-self: center;
+            text-align: left;
+
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+
+        .second-line {
+            align-self: center;
+            text-align: left;
+
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+
+
+        .third-line {
+            align-self: center;
+
+            text-align: left;
+            padding-right: 1px;
+        }
+
+        @media screen and (max-width: 599px) {
+
+            .my-card {
+                flex-direction: column;
+                /* Change this to 'column' to stack the links */
+            }
+
+            .first-line {
+                flex-basis: 100%;
+                align-self: center;
+                text-align: center;
+                padding: 5px 5px 20px 5px;
+
+            }
+
+            .second-line {
+                flex-basis: 100%;
+                align-self: center;
+                text-align: center;
+                padding: 5px 5px 5px 5px;
+
+            }
+
+            .third-line {
+                width: 100%;
+                align-self: center;
+                text-align: center;
+                margin-bottom: 5px;
+
+
+            }
+
+            .resultados {
+                width: 100%;
+                align-self: center;
+                text-align: center;
+                padding: 0px 0px 0px 0px;
+
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- example of injection point where you write your app template -->
+    <div id="q-app">
+        <q-layout>
+            <q-page-container>
+                <q-page padding>
+                    <div class="row">
+                        <q-card class="my-card">
+                            <div class="col-12">
+
+                                <q-card-section>
+                                    <div class=" q-pa-md">
+                                        <div class="q-gutter-sm">
+                                            <q-item-label style="color: #554d48;"><b>Which platform are you using? {{ marketPlacce}}</b></q-item-label>
+                                            <q-radio v-model="marketPlace" val="UberEats" label="UberEats"
+                                                color="red darken-3">
+                                            </q-radio>
+                                            <q-radio v-model="marketPlace" val="DoorDash" label="DoorDash"
+                                                color="red darken-3">
+                                            </q-radio>
+                                            <q-radio v-model="marketPlace" val="GrubHub" label="GrubHub"
+                                                color="red darken-3">
+                                            </q-radio>
+                                        </div>
+
+                                    </div>
+                                </q-card-section>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-7 my-div">
+                                    <q-card-section>
+                                        <div v-for="(dato,index) in datos" :key="dato.index">
+
+                                            <template v-if="dato.type === 'data'">
+                                                <!--  Monthly Gross sales with marketplace -->
+                                                <div class="row aling-center q-py-lg ">
+                                                    <div class="col-12 col-sm-6 first-line">
+                                                        <q-icon style="color: #e40e20;" size="xs" :name="dato.icon">
+                                                        </q-icon>
+                                                        <span class="q-pl-sm text-bold" style="color:#554d48">{{dato.nombre}}</span>
+                                                    </div>
+                                                    <div class="col-12 col-sm-4 second-line ">
+                                                        <q-slider v-model="response[index]" :min="dato.min"
+                                                            :max="dato.max" style="color:#e40e20"
+                                                            :readonly="dato.readOnly" label :label-value="dato.longLabel === '$'?
+                                                            formatPrice(response[index]): response[index] +
+                                                            dato.longLabel" label-always>
+                                                        </q-slider>
+                                                    </div>
+                                                    <div class="col-12 col-sm-2 third-line ">
+                                                        <q-input type="number" input-class="text-center"
+                                                             borderless v-model="response[index]" dense>
+                                                        </q-input>
+                                                    </div>
+                                                </div>
+
+                                            </template>
+                                        </div>
+                                    </q-card-section>
+
+                                </div>
+                                <div class="col-12 col-md-5 q-px-md my-div">
+                                    <div v-for="(dato,index) in datos" :key="dato.index">
+                                        <template v-if="dato.type === 'money'">
+                                            <q-card class="my-card q-my-sm">
+                                                <q-card-section>
+                                                    <div class="row items-center justify-between">
+                                                        <div style="color:#78707b" class="col-12 col-md-12 text-h7">
+                                                           <b> {{dato.nombre}} </b>
+                                                        </div>
+                                                        <div style="color:#78707b" class="col-12 col-md-12 text-h7  ">
+                                                            {{ dato.longLabel === '$'?
+                                                            formatPrice(response[index]): response[index] +
+                                                            dato.longLabel}}
+                                                        </div>
+                                                    </div>
+                                                </q-card-section>
+
+                                            </q-card>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div v-if="result > 1" class="col-12 q-px-md my-div">
+                                    <q-card class="my-card q-my-sm">
+                                        <q-card-section style="background-color: #f1f1f1;" class="text-center q-pt-md">
+                                            <span style="color: #78707b;" class="text-h5 text-bold"> Yearly Savings</span> <br>
+                                            <span style="color: #e40e20; font-size: xx-large;"> {{ formatPrice(result) }} </span>
+                                              
+                                        </q-card-section>
+                                         <q-card-section style="background-color: #f1f1f1;" class="text-center q-pt-xs">
+                                           
+                                              <q-btn type="a" href="https://weknock.com/web/customers-rest/" target="_blank" align="between" class="btn-fixed-width" style="background: #e40e20; color: #fff" label="Get Discount Coupons" icon="local_offer" />
+
+                                        </q-card-section>
+                                    </q-card>
+                                </div>
+                                <div class="col-12 q-px-md my-div">
+                                    <q-card class="my-card q-my-sm">
+                                        <q-card-section>
+                                            <div class="row fit items-start">
+                                                <template v-if="result < 1">
+                                                     <div class="row fit justify-center">
+                                                        <div class="col">
+                                                            <div align="center" class="q-py-none">
+                                                            <q-img     
+                                                               style="max-width: 500px; height: 300px;"
+                                                               fit="cover"                                                       
+                                                               src="https://weknock.com/web/wp-content/uploads/2021/09/NEED-ASSISTENCE_02.png" fit="cover">
+                                                            </q-img>
+                                                            </div>
+                                                            <div align="center" class="q-py-none items-start">
+                                                            <q-btn type="a" href="https://weknock.com/web/main/contact-us/" target="_blank"  style="background: #e40e20; color: white" push>
+                                                                <div>
+                                                                   Contact Us 
+                                                                </div>
+                                                             </q-btn>  
+                                                             </div>
+                                                        </div>                                                      
+                                                     </div>                                                    
+                                                </template>
+                                                <template v-if="result > 15000 && result < 25001">
+                                                    <q-img src="https://weknock.com/web/wp-content/uploads/2021/09/Rango_15to25_rolex_HELV.png" fit="cover">                                                       
+                                                    </q-img>
+                                                </template>
+                                                <template v-if="result > 25000 && result < 50001 ">
+                                                    <q-img src="https://weknock.com/web/wp-content/uploads/2021/09/Rango_25to50_Teslamodel3_HEL.png" fit="cover">                                                       
+                                                    </q-img>
+                                                </template>
+                                                <template v-if="result > 50000 && result < 100001 ">
+                                                    <q-img src="https://weknock.com/web/wp-content/uploads/2021/09/Rango_50to100_TeslamodelX_HEL.png" fit="cover">                                                      
+                                                    </q-img>
+                                                </template>
+                                                <template v-if="result > 100000 && result < 200001 ">
+                                                    <q-img src="https://weknock.com/web/wp-content/uploads/2021/09/Rango100to200_rangeroverauto_HEL.png" fit="cover">                                                        
+                                                    </q-img>
+                                                </template>
+                                                <template v-if="result > 200000 && result < 300001 ">
+                                                    <q-img src="https://weknock.com/web/wp-content/uploads/2021/08/Rango200to300_Lambohuracan_HEL.png" fit="cover">                                                      
+                                                    </q-img>
+                                                </template>
+                                                <template v-if="result > 300000">
+                                                    <q-img src="https://weknock.com/web/wp-content/uploads/2021/08/Rango200to300_Lambohuracan.png" fit="cover">                                                       
+                                                    </q-img>
+                                                </template>
+                                            </div>
+                                        </q-card-section>
+                                    </q-card>
+                                </div>
+                            </div>
+                        </q-card>
+                    </div>
+                </q-page>
+            </q-page-container>
+        </q-layout>
+    </div>
+
+    <!-- Add the following at the end of your body tag -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@2.0.3/dist/quasar.umd.prod.js"></script>
+
+    <script>
+        /*
+        Example kicking off the UI. Obviously, adapt this to your specific needs.
+        Assumes you have a <div id="q-app"></div> in your <body> above
+       */
+        // Create our number formatter.
+
+        const {
+            ref,
+            reactive,
+            watchEffect,
+            computed
+        } = Vue
+
+        const app = Vue.createApp({
+
+            setup() {
+                const response = reactive({})
+
+                response[0] = 0
+                response[1] = 0
+                response[2] = 0
+                response[3] = 33
+                response[4] = 16
+                response[5] = 2.49
+                response[6] = 5
+                response[7] = 0
+                response[8] = 0
+                response[9] = 0
+                response[10] = 0
+                response[11] = 0
+                response[12] = 0
+                const marketPlace = ref('UberEats')
+                const show = (valor) => {
+                    response[3] = valor === 'UberEats' ? 33 : 30
+                }
+
+                watchEffect(() => show(marketPlace.value));
+
+
+
+
+
+                const datos = [{
+                        icon: 'payments',
+                        nombre: 'Monthly Gross sales with marketplace',
+                        min: 1,
+                        max: 300000,
+                        readOnly: false,
+                        type: 'data',
+                        longLabel: '$'
+
+
+                    },
+                    {
+                        icon: 'list_alt',
+                        nombre: 'Number of monthly orders',
+                        min: 1,
+                        max: 20000,
+                        readOnly: false,
+                        type: 'data',
+                        longLabel: ''
+                    },
+                    {
+                        icon: 'functions',
+                        nombre: 'Average order amount',
+                        min: 1,
+                        max: 100,
+                        readOnly: true,
+                        type: 'data',
+                        longLabel: '$'
+                    },
+                    {
+                        icon: 'emoji_symbols',
+                        nombre: 'Platform commission fee percentage',
+                        min: 22,
+                        max: 40,
+                        readOnly: false,
+                        type: 'data',
+                        longLabel: '%'
+                    },
+                    {
+                        icon: 'miscellaneous_services',
+                        nombre: 'Service Fee charged by the marketplace to customer',
+                        min: 1,
+                        max: 40,
+                        readOnly: true,
+                        type: 'money',
+                        longLabel: '%'
+                    },
+                    {
+                        icon: 'free_cancellation',
+                        nombre: 'Delivery fee you may charge to customer',
+                        min: 1,
+                        max: 2.49,
+                        readOnly: true,
+                        type: 'Money',
+                        longLabel: '%'
+                    },
+                    {
+                        icon: 'delivery_dining',
+                        nombre: 'Delivery fee you may charge to customer',
+                        min: 5,
+                        max: 40,
+                        readOnly: false,
+                        type: 'data',
+                        longLabel: ''
+                    },
+                    {
+                        icon: 'restaurant',
+                        nombre: 'How much is your restaurant paying per order on average to the marketplace ',
+                        min: 1,
+                        max: 100,
+                        readOnly: true,
+                        type: 'money',
+                        longLabel: '$'
+                    },
+                    {
+                        icon: 'monetization_on',
+                        nombre: ' How much is your client currently paying for fees',
+                        min: 1,
+                        max: 40,
+                        readOnly: true,
+                        type: 'money',
+                        longLabel: '$'
+                    },
+
+                    {
+                        icon: 'request_quote',
+                        nombre: 'How much is your restaurant getting per order after paying the marketplace commission',
+                        min: 1,
+                        max: 40,
+                        readOnly: true,
+                        type: 'money',
+                        longLabel: '$'
+                    },
+                    {
+                        icon: 'point_of_sale',
+                        nombre: 'Amount you are currently paying to the marketplace monthly',
+                        min: 1,
+                        max: 40,
+                        readOnly: true,
+                        type: 'money',
+                        longLabel: '$'
+                    },
+                    {
+                        icon: 'savings',
+                        nombre: 'Monthly savings delivering with Knock Knock',
+                        min: 1,
+                        max: 40,
+                        readOnly: true,
+                        type: 'money',
+                        longLabel: '$'
+
+                    },
+                ]
+
+                let formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+
+                    // These options are needed to round to whole numbers if that's what you want.
+                    //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                    //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+                });
+
+                const formatPrice = (value) => {
+                    return formatter.format(value);
+                }
+                //formatter.format(2500); /* $2,500.00 */
+
+                const result = computed(() => {
+
+
+                    //calculo de avergeAmount -> c15
+                    const c13 = parseFloat(response[0]).toFixed(2)
+                    const c14 = parseFloat(response[1]).toFixed(2)
+                    const c15 = c13 / c14
+                    response[2] = c15.toFixed(2)
+
+
+                    //calculo de Cuanto esta pagando el restaurante a la plataforma por orden en promedio
+
+                    const c16 = parseFloat(response[3]).toFixed(2)
+                    const c20 = c15 * (c16 / 100)
+                    response[7] = c20.toFixed(2)
+
+                    //Cuanto esta pagando el cliente actualmente en fees
+
+                    const c17 = parseFloat(response[4]) / 100
+                    const c18 = parseFloat(response[5])
+                    const c21 = ((c13 / c14) * c17) + c18
+                    response[8] = c21.toFixed(2)
+
+                    //Cuanto se ahorraria el cliente por orden
+
+                    const c19 = parseFloat(response[6])
+                    const c22 = c21 - c19
+                    // response[9] = c22.toFixed(2)
+
+                    //Cuanto le queda al restaurante despues de pagarle a la plataforma por orden
+
+                    const c23 = (c15 - c20) * 0.93
+                    response[9] = c23.toFixed(2)
+
+                    //Cuanto paga mensalmente al marketplace en comisiones
+
+                    const c24 = c20 * c14
+                    response[10] = c24.toFixed(2)
+
+                    //Ahorro mensual usando kk y vender a traves del marketplace
+                    const c5 = 7
+                    const c25 = (((c16 - 15) / 100) * c13) - (c14 * (c5 - c19))
+                    response[11] = c25.toFixed(2)
+
+
+
+                    return parseFloat(c25 * 12).toFixed(2)
+
+                })
+
+
+                return {
+
+                    response,
+                    result,
+                    datos,
+                    formatPrice,
+                    marketPlace,
+
+                }
+            }
+        })
+
+        app.use(Quasar, {
+            config: {}
+        })
+        app.mount('#q-app')
+    </script>
+</body>
+
+</html>
